@@ -10,9 +10,9 @@ version: 1.0.23
 appVersion: "1.97.0"
 
 dependencies:
-  - name: postgres
-    version: "0.2.*"
-    repository: https://remram44.github.io/matrix-helm
+  - name: postgresql
+    version: 13.x.x
+    repository: oci://registry-1.docker.io/bitnamicharts
     condition: postgres.enabled
   - name: element
     version: "1.0.*"

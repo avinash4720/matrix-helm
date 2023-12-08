@@ -56,7 +56,7 @@ spec:
                   if k not in config:
                       config[k] = defaults[k]
 
-              {{- if .Values.postgres.enabled }}
+              {{- if .Values.postgresql.enabled }}
               # Set postgres config
               assert config["database"]["name"] == "psycopg2"
               config["database"]["args"]["user"] = os.environ["PG_USER"]
@@ -105,11 +105,11 @@ spec:
                   yaml.dump(config, fp)
           env:
             - name: PG_USER
-              value: "{{ .Values.postgres.user }}"
+              value: "{{ .Values.postgresql.user }}"
             - name: PG_DB
-              value: "{{ .Values.postgres.database }}"
+              value: "{{ .Values.postgresql.database }}"
             - name: PG_HOST
-              value: "{{ include "postgres.fullname" .Subcharts.postgres }}"
+              value: "{{ include "postgresql.v1.primary.fullname" .Subcharts.postgresql }}"
           ports:
             - name: http
               containerPort: 8008
@@ -126,7 +126,7 @@ spec:
               name: config
             - mountPath: /etc/synapse/secret
               name: secret
-            {{- if .Values.postgres.enabled }}
+            {{- if .Values.postgresql.enabled }}
             - mountPath: /etc/synapse/postgres-password
               name: postgres-password
               readOnly: true
@@ -164,10 +164,10 @@ spec:
         - name: secret
           secret:
             secretName: {{ .Values.secret.name | default (include "matrix.fullname" .) | quote }}
-        {{- if .Values.postgres.enabled }}
+        {{- if .Values.postgresql.enabled }}
         - name: postgres-password
           secret:
-            secretName: "{{ default (include "postgres.fullname" .Subcharts.postgres) .Values.postgres.secret.name }}"
+            secretName: "{{ default (include "postgresql.v1.primary.fullname" .Subcharts.postgresql) .Values.postgresql.secret.name }}"
         {{- end }}
         {{- range $key, $config := .Values.extraConfig }}
         - name: extra-{{ $key }}

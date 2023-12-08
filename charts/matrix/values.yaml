@@ -100,7 +100,7 @@ storage:
   create: true
   # Override the persistentvolumeclaim's name whose default is the release name
   persistentClaimName: ""
-  storageClass: ""
+  storageClass: "csi-rbd-3-sc"
   capacity: 10Gi
 
 podAnnotations: {}
@@ -163,7 +163,13 @@ element:
         base_url: https://matrix.example.org/
         server_name: Matrix
 
-postgres:
+postgresql:
   enabled: true
-  user: matrix
-  default_collation: C
+  secret: 
+    name: ""
+  auth:
+    username: pguser
+    database: matrix
+  primary:
+    persistence:
+      size: 100Gi
