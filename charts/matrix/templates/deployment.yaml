@@ -167,7 +167,7 @@ spec:
         {{- if .Values.postgresql.enabled }}
         - name: postgres-password
           secret:
-            secretName: "{{ default (include "postgresql.v1.primary.fullname" .Subcharts.postgresql) .Values.postgresql.secret.name }}"
+            secretName: "{{ default (include "postgresql.v1.adminPasswordKey" .Subcharts.postgresql) .Values.postgresql.secret.name }}"
         {{- end }}
         {{- range $key, $config := .Values.extraConfig }}
         - name: extra-{{ $key }}
