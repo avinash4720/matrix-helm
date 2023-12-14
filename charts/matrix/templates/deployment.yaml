@@ -60,7 +60,7 @@ spec:
               # Set postgres config
               assert config["database"]["name"] == "psycopg2"
               config["database"]["args"]["user"] = os.environ["PG_USER"]
-              with open("/etc/synapse/postgres-password") as fp:
+              with open('/etc/synapse/postgres-password') as fp:
                   config["database"]["args"]["password"] = fp.read().strip()
               config["database"]["args"]["dbname"] = os.environ["PG_DB"]
               config["database"]["args"]["host"] = os.environ["PG_HOST"]
@@ -105,9 +105,9 @@ spec:
                   yaml.dump(config, fp)
           env:
             - name: PG_USER
-              value: "{{ .Values.postgresql.user }}"
+              value: "{{ .Values.postgresql.auth.username }}"
             - name: PG_DB
-              value: "{{ .Values.postgresql.database }}"
+              value: "{{ .Values.postgresql.auth.database }}"
             - name: PG_HOST
               value: "{{ include "postgresql.v1.primary.fullname" .Subcharts.postgresql }}"
           ports:
@@ -130,7 +130,7 @@ spec:
             - mountPath: /etc/synapse/postgres-password
               name: postgres-password
               readOnly: true
-              subPath: postgres_password
+              subPath: password
             {{- end }}
             {{- range $key, $config := .Values.extraConfig }}
             - name: extra-{{ $key }}
@@ -167,7 +167,7 @@ spec:
         {{- if .Values.postgresql.enabled }}
         - name: postgres-password
           secret:
-            secretName: "{{ default (include "postgresql.v1.adminPasswordKey" .Subcharts.postgresql) .Values.postgresql.secret.name }}"
+            secretName: "{{ default (include "postgresql.v1.secretName" .Subcharts.postgresql) }}"
         {{- end }}
         {{- range $key, $config := .Values.extraConfig }}
         - name: extra-{{ $key }}
